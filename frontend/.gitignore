@@ -1,0 +1,10 @@
+# Ignore node_modules specifically in the frontend directory
+node_modules/
+
+# Ignore frontend build or cache directories
+.parcel-cache/
+.cache/
+dist/
+
+# Ignore IDE/editor files in the frontend directory
+.vscode/

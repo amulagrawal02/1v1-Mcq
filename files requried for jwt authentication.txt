@@ -1,0 +1,24 @@
+1. JwtUtils
+	
+	a) Contains utility methods for
+	generationg, parsing, and validating JWTs.
+	
+	b) Include gnerating a token from a username, validating a JWT, and extracting the username from a token. 
+
+2. AuthTokenFilter
+	
+	a) Filters incoming requests to check for a valid JWT in the headers, setting the authentication context if the token is valid. 
+
+	b)Extracts JWT from request header, validates it, and configures the Spring Security context with user details if the token is valid.
+
+3. AuthEntryPointJwt
+
+	a) Provides custom handlign for unauthorized requests, typically when authentication is requried but not supplied or valid. 
+	
+	b) when an unauthorized request is detected, it logs the errors and returns JSON reponse with an error message, status code, and the path attempted. 
+	
+4. SecurityConfig
+
+	a) Configures Spring Security filters and rules for the application
+	
+	b) Sets up the security filer chain, permitting or dnying access based on paths and rols. IT also configures session management to stateless, which is crucial for JWT usages.

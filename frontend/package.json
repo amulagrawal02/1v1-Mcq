@@ -1,0 +1,30 @@
+{
+  "name": "1v1-frontend",
+  "version": "1.0.0",
+  "description": "frontend for 1v1 MCQ platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "proxy": "http://localhost:8080/",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-react-refresh-wrap": "^2.12.0",
+    "buffer": "^6.0.3",
+    "parcel-bundler": "^1.12.5",
+    "process": "^0.11.10"
+  },
+  "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
+    "axios": "^1.7.3",
+    "bootstrap": "^5.3.3",
+    "parcel": "^2.12.0",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.4",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.0",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3"
+  }
+}

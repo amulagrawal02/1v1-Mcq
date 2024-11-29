@@ -13,6 +13,8 @@ import com.backend.model.ParticipantModel;
 public interface ParticipantRepository extends JpaRepository<ParticipantModel, Integer>{
 	
 	List<ParticipantModel> findByGameId(Long game_id);
+	
+	ParticipantModel findByParticipant(String participantName);
 
 	
 }

@@ -76,12 +76,14 @@
 		    <artifactId>jjwt-api</artifactId>
 		    <version>0.11.2</version>
 		</dependency>
+		
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-impl</artifactId>
 		    <version>0.11.2</version>
 		    <scope>runtime</scope>
 		</dependency>
+		
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-jackson</artifactId>
@@ -100,11 +102,7 @@
 	   <artifactId>spring-boot-starter-websocket</artifactId>
 	</dependency>
 
-		<dependency>
-			<groupId>auth</groupId>
-			<artifactId>auth</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		
 	</dependencies>
 	<build>
 		<plugins>

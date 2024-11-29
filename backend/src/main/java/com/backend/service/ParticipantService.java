@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.backend.model.GameModel;
 import com.backend.model.ParticipantModel;
 import com.backend.repository.ParticipantRepository;
 
@@ -30,4 +31,9 @@ public class ParticipantService {
 		return ps;
 	}
 	
+	
+	public ParticipantModel findByParticipant(String username)
+	{
+		return participantRepository.findByParticipant(username);
+	}
 }

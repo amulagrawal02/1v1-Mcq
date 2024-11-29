@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.backend.model.GameModel;
 
+
 @Repository
 public interface GameRepository extends JpaRepository<GameModel, Integer>{
+	
+	//GameModel findByparticipant(String username);
 	
 }

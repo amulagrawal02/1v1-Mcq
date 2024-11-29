@@ -84,11 +84,12 @@ public class GameController {
 		Long roomID = Long.parseLong(gameId); 
 		String token = authtoken.substring(7);
 		String user = jwthelper.getUsernameFromToken(token);
-		ParticipantModel participant = new ParticipantModel( roomID, user);
+		ParticipantModel participant = new ParticipantModel(roomID, user);
 		
-
+		System.out.println("username while user try to jion the room: " + user);
 		
-		if(userService.loadUserByUsername(user) != null)
+		
+		if(participantService.findByParticipant(user) != null)
 		{	
 			System.out.println("User Already joined the group" + user);	
 			return new ResponseEntity<>("User Already joined the group", HttpStatus.CONFLICT);

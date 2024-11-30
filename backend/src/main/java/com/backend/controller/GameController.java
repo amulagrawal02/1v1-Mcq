@@ -2,6 +2,7 @@ package com.backend.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -96,6 +97,7 @@ public class GameController {
 		}
 		
 		try {
+			
 			participantService.addParticipant(participant);
 			
 			return new ResponseEntity<>(user + "added in the room with room no :" + gameId, HttpStatus.OK);
@@ -130,6 +132,31 @@ public class GameController {
 			return null;
 		}
 			
+	}
+	@PostMapping("play/gameid/changestatus/{id}")
+	public void LiveStatusChange(@DestinationVariable("id") String id)
+	{
+		String [] details = id.split("#");
+		int status = 0;
+		
+		if(details[2] == "1")
+		{
+			status = 1;
+		}
+		
+		System.out.println("Trying to change the status of gameID:" + details[0] + " with username" +  details[1] + " to " + details[2]);
+		
+		long roomID = Long.parseLong(details[0]);
+		Optional<ParticipantModel> ps = participantService.findByGameIdAndParticipant(roomID, details[1]);
+		
+		if(ps.isPresent()) {
+			System.out.println("get the participant detials with the gameID:" + roomID +" and username " + details[1]);
+			
+			ParticipantModel prt = ps.get();
+			prt.setStatus(status);
+			participantService.addParticipant(prt);
+			
+		}
 		
 	}
 	

@@ -1,6 +1,7 @@
 package com.backend.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -36,4 +37,9 @@ public class ParticipantService {
 	{
 		return participantRepository.findByParticipant(username);
 	}
+	
+	public Optional<ParticipantModel> findByGameIdAndParticipant(Long game_id, String username) {
+	    return participantRepository.findByGameIdAndParticipant(game_id, username);
+	}
+
 }

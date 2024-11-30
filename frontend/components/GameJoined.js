@@ -10,93 +10,72 @@ import LiveParticipants from "./LiveParticipants";
 import LiveChat from "./LiveChat";
 
 function GameJoined() {
-  let client = null;
   const { id } = useParams();
-  const [participant, setParticipants] = useState({});
-  console.log(id);
-  var options = {
-    transports: ["websocket", "jsonp"],
-    // Enable origin check if desired
-    // See https://github.com/sockjs/sockjs-client#available-options for more options
-    origin: true,
-  };
 
-  useEffect(() => {
-    client = new Client();
-    console.log(client);
+  async function startGameHandler(e) {
+    console.log("Start Game Handler called");
 
-    const websocketUrl = `http://localhost:8080/ws-message?token=${encodeURIComponent(
-      localStorage.getItem("jwtToken")
-    )}`;
-    try {
-      // Create a new Stomp client
-      client = new Client({
-        brokerURL: websocketUrl,
-        debug: function (str) {
-          console.log("Debug statement: " + str);
+    const response = await axios(
+      `http://localhost:8080/play/game/changestatus/${id}#${localStorage.getItem(
+        "username"
+      )}#1`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
         },
-        //reconnectDelay: 5000,  // Automatically reconnect if the connection is lost
-        onConnect: () => {
-          const destination = `/play/gameid/${id}`;
-          console.log("Subscribed to:", destination);
-          client.subscribe(destination, (message) => {
-            console.log("Received message:", message.body);
+      }
+    );
 
-            setParticipants(JSON.parse(message.body));
-          });
-          client.publish({
-            destination: destination, // Use the same destination as subscribed
-            body: JSON.stringify({}), // Example data, modify as needed
-          });
-        },
-
-        onStompError: (frame) => {
-          console.error("Broker reported error: " + frame.headers["message"]);
-          console.error("Additional details: " + frame.body);
-        },
-      });
-
-      // If using SockJS (fallback for browsers that don't support WebSockets)
-      client.webSocketFactory = function () {
-        return new SockJS(websocketUrl);
-      };
-
-      // Activate the client
-      client.activate();
-    } catch (error) {
-      console.error("Error setting up WebSocket client:", error);
-    }
-
-    return () => {
-      client && client.deactivate();
-    };
-  }, [id]);
-
-  useEffect(() => {
-    console.log(participant);
-  }, [participant]);
-
+    console.log(response);
+    // e.preventDefault();
+  }
   return (
     <div style={{ height: "100vh" }}>
       {" "}
-      {/* Full height */}
       <Container fluid>
         <Row className="h-100">
           {/* Main Section */}
-          <Col xs={9} className="border-end">
-            <h6>Main Section</h6>
+          <Col xs={9} className="border-end px-4 py-3">
+            <h5 className="mb-4">Lobby Joined: {id}</h5>
+
+            {/* Action Buttons */}
+            <Row className="mb-4">
+              <Col>
+                <button
+                  className="btn btn-primary w-50"
+                  onClick={startGameHandler}
+                >
+                  Start Game
+                </button>
+              </Col>
+              <Col>
+                <button className="btn btn-danger w-50">Leave Lobby</button>
+              </Col>
+            </Row>
+
+            {/* Question Bank */}
+            <Row>
+              <Col>
+                <h6>Question Bank</h6>
+              </Col>
+            </Row>
           </Col>
 
           {/* Other Details */}
-          <Col xs={3}>
-            <Row className="h-50 border-bottom">
+          <Col xs={3} className="px-3 py-3">
+            {/* Live Participants */}
+            <Row className="h-50 border-bottom mb-3">
               <Col>
+                <h6>Live Participants</h6>
                 <LiveParticipants gameId={id} />
               </Col>
             </Row>
 
-            <Row className="h-50">
+            {/* Live Chat */}
+            <Row className="h-50 overflow-auto">
               <Col>
+                <h6>Live Chat</h6>
                 <LiveChat gameId={id} />
               </Col>
             </Row>

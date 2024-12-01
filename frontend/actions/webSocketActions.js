@@ -2,6 +2,7 @@ export const CONNECT_WEBSOCKET = "CONNECT_WEBSOCKET";
 export const DISCONNECT_WEBSOCKET = "DISCONNECT_WEBSOCKET";
 export const UPDATE_PARTICIPANTS = "UPDATE_PARTICIPANTS";
 export const RECEIVE_MESSAGE = "RECEIVE_MESSAGE";
+export const CHECK_ALL_PARTICIPANTS_JOINED = "CHECK_ALL_PARTICIPANTS_JOINED";
 
 // Action to initiate WebSocket connection
 export const connectWebSocket = (gameId) => ({
@@ -24,4 +25,10 @@ export const updateParticipants = (participants) => ({
 export const receiveMessage = (message) => ({
   type: RECEIVE_MESSAGE,
   payload: message, // The message body received from the server
+});
+
+// for checking the all participant joined or not. 
+export const isAllParticipantsJoined = (participants) => ({
+  type :CHECK_ALL_PARTICIPANTS_JOINED, 
+  payload : participants
 });

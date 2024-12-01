@@ -6,15 +6,22 @@ import { Client } from "@stomp/stompjs";
 import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import LiveParticipants from "./LiveParticipants";
 
 import LiveChat from "./LiveChat";
+import QuestionBank from "./QuestionBank";
 import { updateParticipants } from "../actions/webSocketActions";
 
 function GameJoined() {
   const { id } = useParams();
+
+  const [useComponent, setComponent] = useState(false);
+
+  const isAllParticipantsJoined = useSelector(
+    (state) => state.webSocket.allParticipantsJoined
+  );
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -47,6 +54,35 @@ function GameJoined() {
       }
     }
   }
+
+  useEffect(() => {
+    const blockLobby = async () => {
+      if (isAllParticipantsJoined === true) {
+        try {
+          const response = await axios(
+            `http://localhost:8080/game/blockLobby/${id}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            console.log("Lobby Blocked Successfully");
+          } else {
+            console.log("Error while blocking the lobby");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
+    };
+
+    blockLobby(); // Call the async function
+  }, [isAllParticipantsJoined, id]); // Now it will run when `isAllParticipantsJoined` or `id` changes
+
   return (
     <div style={{ height: "100vh" }}>
       {" "}
@@ -78,12 +114,20 @@ function GameJoined() {
               </Col>
             </Row>
 
-            {/* Question Bank */}
             <Row>
               <Col>
-                <h6>Question Bank</h6>
+                {isAllParticipantsJoined === false ? (
+                  <p>All participants have not started the game yet.......</p>
+                ) : (
+                  <>
+                    <p>All participants are ready to start the game!</p>
+                    {useComponent === true ? <QuestionBank /> : null}
+                  </>
+                )}
               </Col>
             </Row>
+
+            {/* Question Bank */}
           </Col>
 
           {/* Other Details */}

@@ -23,9 +23,20 @@ public class GameModel {
 
     // Owner refers to the one who creates the lobby; here owner and the username are the same
     private String owner;
+    
+    
+    private Boolean isBlocked = false;
 
     
-    // for generating the random 6 digit no. 
+    public Boolean getIsBlocked() {
+		return isBlocked;
+	}
+
+	public void setIsBlocked(Boolean isBlocked) {
+		this.isBlocked = isBlocked;
+	}
+
+	// for generating the random 6 digit no. 
     private Long generate6DigitGameId()
     {
     	Random random = new Random();
@@ -43,7 +54,7 @@ public class GameModel {
 
 	@Override
 	public String toString() {
-		return "GameModel [gameId=" + gameId + ", owner=" + owner + "]";
+		return "GameModel [gameId=" + gameId + ", owner=" + owner + ", isBlocked=" + isBlocked + "]";
 	}
 
 	public Long getGameId() {

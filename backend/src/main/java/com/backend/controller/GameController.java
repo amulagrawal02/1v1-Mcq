@@ -92,10 +92,10 @@ public class GameController {
 		String user = jwthelper.getUsernameFromToken(token);
 		ParticipantModel participant = new ParticipantModel(roomID, user);
 		
-		System.out.println("username while user try to jion the room: " + user);
+		System.out.println("username while user try to Join the room: " + user);
 		
-		
-		if(participantService.findByParticipant(user) != null)
+		Optional<ParticipantModel> ps = participantService.findByGameIdAndParticipant(roomID, user);
+		if(ps.isPresent())
 		{	
 			System.out.println("User Already joined the group" + user);	
 			return new ResponseEntity<>("User Already joined the group", HttpStatus.CONFLICT);
@@ -103,13 +103,38 @@ public class GameController {
 		
 		try {
 			
-			participantService.addParticipant(participant);
 			
-			return new ResponseEntity<>(user + "added in the room with room no :" + gameId, HttpStatus.OK);
+			Optional<GameModel> gm = gameService.findByGameId(roomID);
+			
+			if(gm.isPresent())
+			{
+				System.out.println("Gamd Id find");
+				GameModel game = gm.get();
+				
+				if(game.getIsBlocked())
+				{
+					// status code : 509
+					return new ResponseEntity<>("Lobby is Blocked new user can't Login in it", HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
+				}
+				else {
+					participantService.addParticipant(participant);
+					System.out.println("Add the participant in the room: " + gameId + user);
+					
+					return new ResponseEntity<>("added in the room with room no :", HttpStatus.OK);
+				}
+			}
+			
+			else {
+				System.out.println("Wrong Lobby ID");
+				// 405
+				 return new ResponseEntity<>("In Correct Lobby Id", HttpStatus.METHOD_NOT_ALLOWED);
+			}
+			
 		}catch(Exception e)
 		{
-			System.out.println("Error while adding in participant_model table with username" + user + e);	
-			return new ResponseEntity<>("Error while adding in participant_model table ", HttpStatus.BAD_REQUEST);
+			System.out.println("Error while adding participant: " + user + ", Error: " + e.getMessage());
+			// status code 500
+	        return new ResponseEntity<>("Error while adding participant", HttpStatus.INTERNAL_SERVER_ERROR);
 			
 		}
 		
@@ -144,10 +169,7 @@ public class GameController {
 		System.out.println("gameid + username + status: " + id);
 		String[] details = id.split("\\$");
 
-		for(int i = 0 ; i< details.length; i++)
-		{
-			System.out.println(details[i]);
-		}
+		
 		int status = 0;
 		
 		if(details[2].contains("1"))
@@ -189,5 +211,29 @@ public class GameController {
 		
 	}
 	
+	@PostMapping("/blockLobby/{id}")
+	public ResponseEntity<String> blockLobby(@PathVariable("id") String id)
+	{
+		long roomID = Long.parseLong(id);
+		Optional<GameModel> gm = gameService.findByGameId(roomID);
+		
+		if(gm.isPresent())
+		{
+			System.out.println("Gamd Id find");
+			GameModel game = gm.get();
+			
+			System.out.println("game ID finded");
+			game.setIsBlocked(true);
+			gameService.createRoom(game);
+			
+			 return new ResponseEntity<>("Error while adding participant", HttpStatus.OK);
+			
+		}
+		
+		else {
+			System.out.println("FAcing problem while blocking the Lobby");
+			 return new ResponseEntity<>("Error while adding participant", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 }

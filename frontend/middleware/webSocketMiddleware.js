@@ -3,6 +3,7 @@ import {
   DISCONNECT_WEBSOCKET,
   updateParticipants,
   receiveMessage,
+  isAllParticipantsJoined,
 } from "../actions/webSocketActions";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -26,6 +27,7 @@ export const webSocketMiddleware = (store) => (next) => (action) => {
             console.log("Received message:", message.body);
 
             store.dispatch(updateParticipants(JSON.parse(message.body)));
+            store.dispatch(isAllParticipantsJoined(JSON.parse(message.body)));
 
             //setParticipants(JSON.parse(message.body));
           });

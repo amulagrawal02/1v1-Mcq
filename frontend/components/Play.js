@@ -53,11 +53,13 @@ const Play = () => {
           },
         }
       );
-      console.log(reponse);
+      console.log("response while joining the room: " + response);
       if (response.status == 200) {
-        alert("User Joined the room with roomID: " + gameId);
+        // alert("User Joined the room with roomID: " + gameId);
         const url = `/play/gameid/${gameId}`;
         navigate(url);
+      } else {
+        console.log("Inside the else part: ");
       }
     } catch (error) {
       if (error.response) {
@@ -66,6 +68,13 @@ const Play = () => {
           console.log("User already Joined the group");
           const url = `/play/gameid/${gameId}`;
           navigate(url);
+        } else if (error.response.status == 509) {
+          alert("Game Started, new player can't Join the Lobby now");
+        } else if (error.response.status == 405) {
+          console.log("Wrong Lobby Id");
+          alert("Wrong Lobby Id");
+        } else {
+          console.log("error while Joining the Lobby" + error);
         }
       }
     }

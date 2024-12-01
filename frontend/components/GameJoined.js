@@ -1,34 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { Client } from "@stomp/stompjs";
 import { Container, Row, Col } from "react-bootstrap";
+import axios from "axios";
+
+import { useDispatch } from "react-redux";
 
 import LiveParticipants from "./LiveParticipants";
 
 import LiveChat from "./LiveChat";
+import { updateParticipants } from "../actions/webSocketActions";
 
 function GameJoined() {
   const { id } = useParams();
+  const dispatch = useDispatch();
 
-  async function startGameHandler(e) {
-    console.log("Start Game Handler called");
+  const navigate = useNavigate();
 
-    const response = await axios(
-      `http://localhost:8080/play/game/changestatus/${id}#${localStorage.getItem(
-        "username"
-      )}#1`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-        },
+  async function GameHandler(e) {
+    console.log("event handler", e.target.id);
+
+    var status = 0;
+    if (e.target.id == "leaveGmeHandler") {
+      status = 0;
+    } else if (e.target.id == "srtGmeHandler") {
+      status = 1;
+    }
+
+    var updateURL = `http://localhost:8080/game/play/gameid/changestatus/${id}$${localStorage.getItem(
+      "username"
+    )}$${status}`;
+    console.log("url we try to hitting: " + updateURL);
+    const response = await axios(updateURL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+      },
+    });
+
+    if (response.status == 200) {
+      if (e.target.id == "leaveGmeHandler") {
+        navigate("/play");
+      } else if ((e.target.id = "srtGmeHandler")) {
       }
-    );
-
-    console.log(response);
-    // e.preventDefault();
+    }
   }
   return (
     <div style={{ height: "100vh" }}>
@@ -44,13 +61,20 @@ function GameJoined() {
               <Col>
                 <button
                   className="btn btn-primary w-50"
-                  onClick={startGameHandler}
+                  id="srtGmeHandler"
+                  onClick={GameHandler}
                 >
                   Start Game
                 </button>
               </Col>
               <Col>
-                <button className="btn btn-danger w-50">Leave Lobby</button>
+                <button
+                  className="btn btn-danger w-50"
+                  id="leaveGmeHandler"
+                  onClick={GameHandler}
+                >
+                  Leave Lobby
+                </button>
               </Col>
             </Row>
 

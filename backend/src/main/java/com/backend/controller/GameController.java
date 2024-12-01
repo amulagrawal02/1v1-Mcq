@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -33,6 +35,9 @@ public class GameController {
 	private final GameService gameService;
 	private final ParticipantService participantService;
 	private final UserService userService;
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 	
 	@Autowired
 	private JwtHelper jwthelper;
@@ -133,19 +138,25 @@ public class GameController {
 		}
 			
 	}
-	@PostMapping("play/gameid/changestatus/{id}")
-	public void LiveStatusChange(@DestinationVariable("id") String id)
+	@PostMapping("/play/gameid/changestatus/{id}")
+	public void LiveStatusChange(@PathVariable("id") String id)
 	{
-		String [] details = id.split("#");
+		System.out.println("gameid + username + status: " + id);
+		String[] details = id.split("\\$");
+
+		for(int i = 0 ; i< details.length; i++)
+		{
+			System.out.println(details[i]);
+		}
 		int status = 0;
 		
-		if(details[2] == "1")
+		if(details[2].contains("1"))
 		{
 			status = 1;
 		}
-		
-		System.out.println("Trying to change the status of gameID:" + details[0] + " with username" +  details[1] + " to " + details[2]);
-		
+		else {
+			status = 0;
+		}
 		long roomID = Long.parseLong(details[0]);
 		Optional<ParticipantModel> ps = participantService.findByGameIdAndParticipant(roomID, details[1]);
 		
@@ -153,8 +164,26 @@ public class GameController {
 			System.out.println("get the participant detials with the gameID:" + roomID +" and username " + details[1]);
 			
 			ParticipantModel prt = ps.get();
-			prt.setStatus(status);
-			participantService.addParticipant(prt);
+			System.out.println(prt);
+			if(status == 1)
+			{
+				prt.setStatus(status);
+				participantService.addParticipant(prt);
+			}
+			else {
+				participantService.deleteParticipant(prt);
+			}	
+			
+			List<ParticipantModel> updatedParticipants = participantService.findParticipantwithGivenGameId(roomID);
+			messagingTemplate.convertAndSend("/play/gameid/" + roomID, updatedParticipants);
+			
+			//return updatedParticipants; 
+			
+			
+		}
+		else {
+			System.out.println("participant not joined the room and try to fetch the data");
+			//return null;
 			
 		}
 		

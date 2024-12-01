@@ -71,7 +71,8 @@ public class ParticipantModel {
 
 	@Override
 	public String toString() {
-		return "ParticipantModel [id=" + id + ", game_id=" + gameId + ", participant=" + participant + "]";
+		return "ParticipantModel [id=" + id + ", status=" + status + ", gameId=" + gameId + ", participant="
+				+ participant + "]";
 	}
     
     

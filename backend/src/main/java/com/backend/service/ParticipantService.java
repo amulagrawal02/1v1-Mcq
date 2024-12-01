@@ -21,6 +21,8 @@ public class ParticipantService {
 	{
 		
 		participantRepository.save(participantmodel);
+		
+		System.out.println( "particpiapant model detials inside the addParticipants:  " + participantmodel);
 	}
 	
 	public List<ParticipantModel> findParticipantwithGivenGameId(Long game_id)
@@ -40,6 +42,11 @@ public class ParticipantService {
 	
 	public Optional<ParticipantModel> findByGameIdAndParticipant(Long game_id, String username) {
 	    return participantRepository.findByGameIdAndParticipant(game_id, username);
+	}
+	
+	public void deleteParticipant(ParticipantModel prt)
+	{
+		participantRepository.delete(prt);
 	}
 
 }

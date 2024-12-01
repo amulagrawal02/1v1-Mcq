@@ -19,4 +19,7 @@ public interface ParticipantRepository extends JpaRepository<ParticipantModel, I
 
 	Optional<ParticipantModel> findByGameIdAndParticipant(Long gameId, String participant);
 	
+	void delete(ParticipantModel prt);
+	
+	
 }

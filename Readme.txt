@@ -12,4 +12,4 @@ for starting the backend.
 1. open the project in the eclipise. 
 2. refersh and install all the dependancy from pom.xml for that update the maven
 3. firstly check the db is present or not and create the database
-4. run the file backendApplication.java
+4. run the file backendApplication.java - amul
